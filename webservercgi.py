@@ -1,3 +1,6 @@
+#Code joint effort of CS252 group:  Python/Server-Side by Govind Girish (girishg@purdue.edu), Database/Server-side, and Database/Front-End by Lucas (Bronson) Hall (hall333@purdue.edu), HTML/CSS/JS/front-end by Aaron Althoff (aalthof@purdue.edu) 
+
+
 import errno
 import os
 import signal
