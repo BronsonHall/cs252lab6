@@ -1,0 +1,35 @@
+Database:  `art`
+Tables: 
+	   `grid`
+		
+	+-------+--------------+------+-----+---------+----------------+
+	| Field | Type         | Null | Key | Default | Extra          |
+	+-------+--------------+------+-----+---------+----------------+
+	| id    | int(11)      | NO   | PRI | NULL    | auto_increment |
+	| x     | int(11)      | NO   |     | NULL    |                |
+	| y     | int(11)      | NO   |     | NULL    |                |
+	| r     | int(11)      | NO   |     | NULL    |                |
+	| g     | int(11)      | NO   |     | NULL    |                |
+	| b     | int(11)      | NO   |     | NULL    |                |
+	| user  | varchar(255) | NO   |     | NULL    |                |
+	+-------+--------------+------+-----+---------+----------------+
+	7 rows in set (0.00 sec)
+
+
+	   `users`
+	
+	+------------+--------------+------+-----+-------------------+-----------------------------+
+	| Field      | Type         | Null | Key | Default           | Extra                       |
+	+------------+--------------+------+-----+-------------------+-----------------------------+
+	| id         | int(11)      | NO   | PRI | NULL              | auto_increment              |
+	| username   | varchar(255) | NO   |     | NULL              |                             |
+	| password   | varchar(255) | NO   |     | NULL              |                             |
+	| timeposted | timestamp    | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
+	+------------+--------------+------+-----+-------------------+-----------------------------+
+	4 rows in set (0.01 sec)
+
+
+README:
+	The database art is designed to track both the list of registered users, by username and password pairing, with their status, and the grid of non-default squares itself.
+	The users have four recorded fields, `id`, their identifier, `username`, their username, `password`, their password, and `timeposted`, or the last timestamp at which they edited a grid square.
+	Each grid square has an `x`, `y` position, rgb values, and `user`, the user that last changed that square
