@@ -1,6 +1,3 @@
-#Code joint effort of CS252 group:  Python/Server-Side by Govind Girish (girishg@purdue.edu), Database/Server-side, and Database/Front-End by Lucas (Bronson) Hall (hall333@purdue.edu), HTML/CSS/JS/front-end by Aaron Althoff (aalthof@purdue.edu) 
-
-
 import errno
 import os
 import signal
@@ -50,6 +47,30 @@ Password: <br>
 <input type=\"hidden\" name=\"-newacct\">
 <input type=\"submit\" value=\"Create Account\"><br>
 </form>
+</body>
+
+</html> """)
+
+def write_contentnomatch(client_connection):
+    client_connection.sendall(b"""<!DOCTYPE html>
+<html>
+<head>
+<title>Pixelgraph: Welcome!</title>
+</head>
+
+<body>
+Error: Passwords Do Not Match!<br>
+<form method=\"post\" >
+Choose Username: <br>
+<input type=\"text\" name=\"_newusername\"><br>
+Choose Password: <br>
+<input type=\"password\" name=\"_newpassword\"><br>
+Repeat Password: <br>
+<input type=\"password\" name=\"password\"><br>
+<input type=\"submit\" value=\"Submit\"><br>
+</form>
+
+
 </body>
 
 </html> """)
@@ -168,21 +189,26 @@ Hello, World!
         user = b[0]
         user = user[13:]
         passw = b[1]
-        passw = passw[13:]
+        passw = passw[13:] 
+        passwt = b[2]
+        passwt = passwt[9:]
         print(user)
         print(passw)
-        print("adding user " + user + "with password " + passw)
-        connection = pymysql.connect(host='localhost',user='root', password='gustavo', db='art', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
-        try:
-            with connection.cursor() as cursor:
-                sql = "INSERT INTO `users` (`username`, `password`) VALUES (%s, %s)"
-                cursor.execute(sql, (user, passw))
+        if passwt == passw :	
+            print("adding user " + user + "with password " + passw)
+            connection = pymysql.connect(host='localhost',user='root', password='gustavo', db='art', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+            try:
+                with connection.cursor() as cursor:
+                    sql = "INSERT INTO `users` (`username`, `password`) VALUES (%s, %s)"
+                    cursor.execute(sql, (user, passw))
 
-            connection.commit()
-        finally:
-            connection.close()
+                connection.commit()
+            finally:
+                connection.close()
 
-        write_contentgraph(client_connection, user, passw)
+            write_contentgraph(client_connection, user, passw)
+        else:
+            write_contentnomatch(client_connection)
     else:
         write_content(client_connection)
     
