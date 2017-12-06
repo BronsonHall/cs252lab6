@@ -231,12 +231,15 @@ Hello, World!
                 with connection.cursor() as cursor:
                     sql = "INSERT INTO `users` (`username`, `password`, `timeposted`) VALUES (%s, %s, NOW() - INTERVAL 2 MINUTE)"
                     cursor.execute(sql, (user, passw))
-
-                connection.commit()
+                    connection.commit()
+                    sql = "UPDATE users SET timeposted = NOW() where username=%s"
+                    cursor.execute(sql, (user))
+                    write_contentgraph(client_connection, user, passw)
+                    connection.commit()
             finally:
                 connection.close()
 
-            write_contentgraph(client_connection, user, passw)
+#            write_contentgraph(client_connection, user, passw)
         else:
             write_contentnomatch(client_connection)
     else:
