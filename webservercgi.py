@@ -124,6 +124,8 @@ Repeat Password: <br>
 
 
 def write_contentgraph(client_connection, user, passw):
+    connection = pymysql.connect(host='localhost',user='root', password='gustavo', db='art', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+    
     client_connection.sendall(b"""<!DOCTYPE html>
 <html>
 <head>
@@ -140,6 +142,24 @@ username/password = """)
 
 </html> """)
 
+def write_contentgraphdelay(client_connection, user, passw):
+    connection = pymysql.connect(host='localhost',user='root', password='gustavo', db='art', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
+
+    client_connection.sendall(b"""<!DOCTYPE html>
+<html>
+<head>
+<title>Pixelgraph: Welcome!</title>
+</head>
+
+<body>
+No graph changes allowed yet, wait 2 minutes!
+username/password = """)
+    client_connection.sendall(user.encode())
+    client_connection.sendall(passw.encode())
+    client_connection.sendall(b"""
+</body>
+
+</html> """)
 
 
 def handle_request(client_connection):
@@ -177,7 +197,17 @@ Hello, World!
                 result = cursor.fetchone()
                 print(result)
                 if result != None:
-                    write_contentgraph(client_connection, user, passw)
+                    sql = "SELECT * FROM users WHERE `username`=%s AND `timeposted` <= NOW() - INTERVAL 2 MINUTE"
+                    cursor.execute(sql, (user))
+                    result = cursor.fetchone()
+                    print(result)
+                    if result != None:
+                        write_contentgraph(client_connection, user, passw)
+                        sql = "UPDATE users SET timeposted = NOW() where username=%s"
+                        cursor.execute(sql, (user))
+                        connection.commit()
+                    else:
+                        write_contentgraphdelay(client_connection, user, passw)
                 else:
                     write_contentwrong(client_connection)
         finally:
@@ -199,7 +229,7 @@ Hello, World!
             connection = pymysql.connect(host='localhost',user='root', password='gustavo', db='art', charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor)
             try:
                 with connection.cursor() as cursor:
-                    sql = "INSERT INTO `users` (`username`, `password`) VALUES (%s, %s)"
+                    sql = "INSERT INTO `users` (`username`, `password`, `timeposted`) VALUES (%s, %s, NOW() - INTERVAL 2 MINUTE)"
                     cursor.execute(sql, (user, passw))
 
                 connection.commit()
@@ -211,7 +241,19 @@ Hello, World!
             write_contentnomatch(client_connection)
     else:
         write_content(client_connection)
-    
+
+def checkGET(checkString):
+	if "GET" in checkString:
+		return True
+	else:
+		return False
+
+def checkPOST(checkString):
+	if "POST" in checkString:
+		return True
+	else:
+		return False
+
 def serve_forever():
     listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
