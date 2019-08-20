@@ -15,3 +15,4 @@ Code on this github:
     
 Code on other Githubs:
     Aaron's HTML, CSS, and JS is located on his own github, all other work is hosted on our digital ocean server at pixelgraph.me
+(Update: digital ocean server no longer up, live version of site can be provided upon request)
